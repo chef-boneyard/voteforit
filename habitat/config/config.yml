@@ -1,0 +1,11 @@
+choices:
+{{#each cfg.choices}}  {{@key}}: {{this}}
+{{/each}}
+
+question: {{cfg.question}}
+
+{{#if bind.has_redis}}
+redis_url: redis://{{bind.redis.me.ip}}:{{bind.redis.me.port}}
+{{else}}
+redis_url: {{cfg.redis_url}}
+{{/if}}

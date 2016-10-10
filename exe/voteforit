@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+def config
+  if i = ARGV.find_index("--config")
+    if config_yaml = ARGV[i + 1]
+      if !File.exists?(config_yaml)
+        abort "You must provide a valid yaml config that exists"
+      end
+      data = YAML.load_file(config_yaml)
+      if !data.key?("choices")
+        abort "Config missing required key: choices"
+      end
+      if !data.key?("question")
+        abort "Config missing required key: question"
+      end
+      if !data.key?("redis_url")
+        abort "Config missing required key: redis_url"
+      end
+      return data
+    else
+      abort "You must provide value for --config (ex: #{$0} --config /path/to/config.yaml)"
+    end
+  else
+    abort "You must provide: --config /path/to/config.yaml"
+  end
+end
+
+require "voteforit"
+Voteforit::Server.run!({bind: "0.0.0.0", environment: "production"}.merge(config))

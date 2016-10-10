@@ -1,0 +1,7 @@
+choices:
+  ham: Hamburger
+  piz: Pizza
+  cur: Curry
+  noo: Noodles
+
+redis_url: redis://127.0.0.1:6379/voteforit
