@@ -5,7 +5,8 @@
     "path": ".delivery/build-cookbook"
   },
   "skip_phases": [
-    "security"
+    "security",
+    "smoke"
    ],
   "delivery-truck": {
      "publish": {
