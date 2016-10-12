@@ -10,6 +10,7 @@ def config
       if !data.key?("choices")
         abort "Config missing required key: choices"
       end
+      data["choices"] = {} if data["choices"].nil?
       if !data.key?("question")
         abort "Config missing required key: question"
       end
