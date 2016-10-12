@@ -21,7 +21,7 @@ include_recipe "voteforit_deploy::default"
 origin = "fnichol"
 name = "voteforit"
 
-peer_ip = node.fetch("voteforit", {}).fetch("redis_peer_ip", "127.0.0.1")
+peer_ip = node.fetch("voteforit", {}).fetch("redis_peer_ip", "0.0.0.0")
 redis_sg = node.fetch("voteforit", {}).fetch("redis_service_group", "redis.default")
 
 directory "/hab/svc/#{name}" do
@@ -30,11 +30,11 @@ end
 
 file "/hab/svc/#{name}/user.toml" do
   content <<_CONTENT_
-question = "What the what?"
+question = "Hey Community Summit, what's our question?"
 
 [choices]
-poo = "Poop"
 _CONTENT_
+  notifies :restart, "systemd_unit[#{name}.service]"
 end
 
 systemd_unit "#{name}.service" do
@@ -49,4 +49,5 @@ ExecStart=/bin/hab start #{origin}/#{name} --listen-http 0.0.0.0:9641 --listen-p
 Restart=on-failure
 _CONTENT_
   action [:create, :enable, :start]
+  notifies :run, "execute[wait-a-tick]", :immediately
 end

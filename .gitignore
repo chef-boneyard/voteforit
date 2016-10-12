@@ -9,3 +9,4 @@
 /tmp/
 .kitchen/
 results/
+.chef/

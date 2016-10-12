@@ -19,3 +19,8 @@
 hab_install "Install the Habitats!"
 
 user "hab"
+
+execute "wait-a-tick" do
+  command "sleep 30"
+  action :nothing
+end

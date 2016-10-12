@@ -4,4 +4,6 @@ choices:
   cur: Curry
   noo: Noodles
 
+question: Why????
+
 redis_url: redis://127.0.0.1:6379/voteforit
