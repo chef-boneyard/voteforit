@@ -23,6 +23,12 @@ name = "voteforit"
 
 peer_ip = node.fetch("voteforit", {}).fetch("redis_peer_ip", "0.0.0.0")
 redis_sg = node.fetch("voteforit", {}).fetch("redis_service_group", "redis.default")
+log node.recipes.inspect
+listen = if node.recipes.include?("voteforit_deploy::redis")
+  "--listen-http 0.0.0.0:9641 --listen-peer 0.0.0.0:9644"
+else
+  ""
+end
 
 directory "/hab/svc/#{name}" do
   recursive true
@@ -45,7 +51,7 @@ Description=#{origin}/#{name}
 After=network.target auditd.service
 
 [Service]
-ExecStart=/bin/hab start #{origin}/#{name} --listen-http 0.0.0.0:9641 --listen-peer 0.0.0.0:9644 --peer #{peer_ip} --bind redis:#{redis_sg}
+ExecStart=/bin/hab start #{origin}/#{name} #{listen} --peer #{peer_ip} --bind redis:#{redis_sg}
 Restart=on-failure
 _CONTENT_
   action [:create, :enable, :start]
