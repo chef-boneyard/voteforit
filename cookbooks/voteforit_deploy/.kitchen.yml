@@ -1,0 +1,33 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu-16.04
+
+suites:
+  - name: monolith
+    run_list:
+      - recipe[voteforit_deploy::redis]
+      - recipe[voteforit_deploy::app]
+    verifier:
+      inspec_tests:
+        - test/recipes
+  - name: app
+    run_list:
+      - recipe[voteforit_deploy::app]
+    verifier:
+      inspec_tests:
+        - test/recipes
+  - name: redis
+    run_list:
+      - recipe[voteforit_deploy::redis]
+    verifier:
+      inspec_tests:
+        - test/recipes
