@@ -18,17 +18,18 @@
 
 include_recipe "voteforit_deploy::default"
 
+def is_monolith?
+  node.recipes.include?("voteforit_deploy::redis")
+end
+
 origin = "fnichol"
 name = "voteforit"
+ipaddr = node["ipaddress"]
 
-peer_ip = node.fetch("voteforit", {}).fetch("redis_peer_ip", "0.0.0.0")
+peer_ip = node.fetch("voteforit", {}).fetch("redis_peer_ip", ipaddr)
 redis_sg = node.fetch("voteforit", {}).fetch("redis_service_group", "redis.default")
-log node.recipes.inspect
-listen = if node.recipes.include?("voteforit_deploy::redis")
-  "--listen-http 0.0.0.0:9641 --listen-peer 0.0.0.0:9644"
-else
-  ""
-end
+
+listen = is_monolith? ? "--listen-http #{ipaddr}:9641 --listen-peer #{ipaddr}:9644" : ""
 
 directory "/hab/svc/#{name}" do
   recursive true
@@ -55,5 +56,4 @@ ExecStart=/bin/hab start #{origin}/#{name} #{listen} --peer #{peer_ip} --bind re
 Restart=on-failure
 _CONTENT_
   action [:create, :enable, :start]
-  notifies :run, "execute[wait-a-tick]", :immediately
 end

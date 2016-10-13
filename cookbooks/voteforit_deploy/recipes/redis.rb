@@ -40,9 +40,11 @@ Description=#{origin}/#{name}
 After=network.target auditd.service
 
 [Service]
-ExecStart=/bin/hab start #{origin}/#{name} --listen-http 0.0.0.0:9631 --listen-peer 0.0.0.0:9634
+ExecStart=/bin/hab start #{origin}/#{name}
 Restart=on-failure
 _CONTENT_
   action [:create, :enable, :start]
-  notifies :run, "execute[wait-a-tick]", :immediately
+  if node.recipes.include?("voteforit_deploy::app")
+    notifies :run, "execute[wait-a-tick]", :immediately
+  end
 end
